@@ -1,19 +1,16 @@
-"""
-database.py — AspirantFlow SQLite Handler
-=========================================
-Central data layer. All tables are created here on first run.
-Every public method accepts a `user_id` so data stays user-scoped.
-
-Flow overview:
-  UI  ──calls──►  DatabaseManager methods  ──SQL──►  aspirantflow.db
-  UI  ◄─returns─  plain dicts / lists       ◄──────  SQLite rows
-"""
-
 import sqlite3
 import os
 from datetime import date
+import flet as ft
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "aspirantflow.db")
+# This function ensures the app can write data on Android
+def get_db_path():
+    # For Android APKs, we use the current working directory 
+    # which Flet sets to the app's internal data folder.
+    data_dir = os.getcwd() 
+    return os.path.join(data_dir, "aspirantflow.db")
+
+DB_PATH = get_db_path()
 
 
 def _connect() -> sqlite3.Connection:
