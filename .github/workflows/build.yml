@@ -33,3 +33,12 @@ jobs:
       - name: Build Android APK
         run: |
           flet build apk --verbose
+
+      - name: Upload APK Artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: AspirantFlow-Installer
+          # This line below was modified to search everywhere for the APK
+          path: '**/*.apk' 
+          retention-days: 1
