@@ -1,6 +1,7 @@
 name: Build Flet APK
 on:
-  workflow_dispatch:
+  push:             # Building starts automatically when you save/push
+  workflow_dispatch: # Keeps the manual button there just in case
 
 jobs:
   build:
@@ -13,7 +14,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: '17' # Android needs Java to build
+          java-version: '17'
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -25,17 +26,15 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Accept Android Licenses
-        run: yes | sdkmanager --licenses || true
-
-      - name: Install Dependencies
+      - name: Install Flet
         run: |
           pip install flet
+          # If you have a requirements.txt, this installs it too
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Build Android APK
         run: |
-          # The --yes flag automatically answers "yes" to install Flutter inside the robot
+          # The --yes flag bypasses prompts so the robot doesn't get stuck
           flet build apk --project "AspirantFlow" --release --yes
 
       - name: Upload APK
